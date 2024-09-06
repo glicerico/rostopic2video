@@ -30,7 +30,8 @@ def start_new_video():
         out.release()  # Release the current video file if it exists
         rospy.loginfo(f"Video {video_index} saved.")
     video_index += 1
-    video_output_path = video_filename_template.format(video_index)
+    timestamp = time.strftime("%Y%m%d_%H%M%S")
+    video_output_path = video_filename_template.format(timestamp)
     out = cv2.VideoWriter(video_output_path, cv2.VideoWriter_fourcc(*'XVID'), fps, (frame_width, frame_height))
     last_time = time.time()
     rospy.loginfo(f"Started new video: {video_output_path}")
@@ -69,8 +70,9 @@ def signal_handler(sig, frame):
 signal.signal(signal.SIGINT, signal_handler)
 signal.signal(signal.SIGTERM, signal_handler)
 
-# Subscribe to the ROS image topic (replace '/camera/image' with your topic)
-image_topic = '/hr/sensors/vision/chest_cam/chest_usb_cam/image_raw'
+# Subscribe to the ROS image topic (choose the one you need)
+# image_topic = '/hr/sensors/vision/chest_cam/chest_usb_cam/image_raw'  # Topic from the realsense camera
+image_topic = '/hr/perception/ui_image'  # Topic from the webUI image
 rospy.Subscriber(image_topic, Image, image_callback)
 
 # Keep the node running until manually stopped

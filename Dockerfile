@@ -13,12 +13,16 @@ RUN apt-get update && \
 # Set up your working directory
 WORKDIR /app
 
-# Copy the Python script into the container
+# Copy the Python script and entrypoint script into the container
 COPY video_creator.py /app/video_creator.py
+COPY entrypoint.sh /app/entrypoint.sh
 
 # Source ROS environment
 SHELL ["/bin/bash", "-c"]
 RUN echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc
 
-# Set the command to run your Python script
-CMD ["python3", "/app/video_creator.py"]
+# Make the entrypoint script executable
+RUN chmod +x /app/entrypoint.sh
+
+# Set the entrypoint to the script
+ENTRYPOINT ["/app/entrypoint.sh"]
